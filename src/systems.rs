@@ -3,11 +3,9 @@ use bevy::window::PrimaryWindow;
 use rand::random;
 
 // variables
-
 pub const SNAKE_SPEED: f32 = 32.0;
 
 // components
-
 #[derive(Component)]
 pub struct Snake {
     pub direction: Vec3,
@@ -16,8 +14,10 @@ pub struct Snake {
 #[derive(Component)]
 pub struct SnakeTimer(Timer);
 
-// systems
+#[derive(Component)]
+pub struct Food {}
 
+// systems
 pub fn spawn_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
     let window = window_query.get_single().unwrap();
 
@@ -25,6 +25,26 @@ pub fn spawn_camera(mut commands: Commands, window_query: Query<&Window, With<Pr
         transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
         ..default()
     });
+}
+
+pub fn spawn_food(
+    mut commands: Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    asset_server: Res<AssetServer>,
+) {
+    let window = window_query.get_single().unwrap();
+
+    let random_x = random::<f32>() * window.width();
+    let random_y = random::<f32>() * window.height();
+
+    commands.spawn((
+        SpriteBundle {
+            transform: Transform::from_xyz(random_x, random_y, 0.0),
+            texture: asset_server.load("sprites/food.png"),
+            ..default()
+        },
+        Food {},
+    ));
 }
 
 pub fn spawn_snake(
@@ -52,6 +72,8 @@ pub fn spawn_snake(
         .spawn(snake_bundle)
         .insert(SnakeTimer(Timer::from_seconds(0.2, TimerMode::Repeating)));
 }
+
+// todo, the snake needs to move in a grid the size of the tile needs to be the same as the sprite size
 
 pub fn input_handler_snake(
     keyboard_input: Res<ButtonInput<KeyCode>>,
