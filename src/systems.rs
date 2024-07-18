@@ -39,7 +39,12 @@ pub fn spawn_food(
 
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz(random_x, random_y, 0.0),
+            transform: Transform {
+                translation: Vec3::new(random_x, random_y, 0.0),
+                scale: Vec3::new(0.1, 0.1, 1.0),
+                ..default()
+            },
+
             texture: asset_server.load("sprites/food.png"),
             ..default()
         },
