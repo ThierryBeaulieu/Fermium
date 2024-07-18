@@ -4,7 +4,7 @@ use rand::random;
 
 // variables
 
-pub const SNAKE_SPEED: f32 = 500.0;
+pub const SNAKE_SPEED: f32 = 32.0;
 
 // components
 
@@ -12,6 +12,9 @@ pub const SNAKE_SPEED: f32 = 500.0;
 pub struct Snake {
     pub direction: Vec3,
 }
+
+#[derive(Component)]
+pub struct SnakeTimer(Timer);
 
 // systems
 
@@ -45,40 +48,46 @@ pub fn spawn_snake(
         },
     );
 
-    commands.spawn(snake_bundle);
+    commands
+        .spawn(snake_bundle)
+        .insert(SnakeTimer(Timer::from_seconds(0.2, TimerMode::Repeating)));
 }
 
 pub fn input_handler_snake(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<(&mut Transform, &mut Snake), With<Snake>>,
+    mut player_query: Query<(&mut Transform, &mut Snake, &mut SnakeTimer), With<Snake>>,
     time: Res<Time>,
 ) {
-    if let Ok((mut transform, mut snake)) = player_query.get_single_mut() {
-        let mut direction = Vec3::ZERO;
+    if let Ok((mut transform, mut snake, mut timer)) = player_query.get_single_mut() {
+        timer.0.tick(time.delta());
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft) || keyboard_input.pressed(KeyCode::KeyA) {
-            direction += Vec3::new(-1.0, 0.0, 0.0);
-            snake.direction = Vec3::new(-1.0, 0.0, 0.0);
-        } else if keyboard_input.pressed(KeyCode::ArrowLeft)
-            || keyboard_input.pressed(KeyCode::KeyS)
-        {
-            direction += Vec3::new(0.0, -1.0, 0.0);
-            snake.direction = Vec3::new(0.0, -1.0, 0.0);
-        } else if keyboard_input.pressed(KeyCode::ArrowLeft)
-            || keyboard_input.pressed(KeyCode::KeyD)
-        {
-            direction += Vec3::new(1.0, 0.0, 0.0);
-            snake.direction = Vec3::new(1.0, 0.0, 0.0);
-        } else if keyboard_input.pressed(KeyCode::ArrowLeft)
-            || keyboard_input.pressed(KeyCode::KeyW)
-        {
-            direction += Vec3::new(0.0, 1.0, 0.0);
-            snake.direction = Vec3::new(0.0, 1.0, 0.0);
-        } else {
-            direction += snake.direction
-            // todo: if a direction hasn't been set before,
-            // continue using the direction that was planned before
+        if timer.0.finished() {
+            let mut direction = Vec3::ZERO;
+
+            if keyboard_input.pressed(KeyCode::ArrowLeft) || keyboard_input.pressed(KeyCode::KeyA) {
+                direction += Vec3::new(-1.0, 0.0, 0.0);
+                snake.direction = Vec3::new(-1.0, 0.0, 0.0);
+            } else if keyboard_input.pressed(KeyCode::ArrowLeft)
+                || keyboard_input.pressed(KeyCode::KeyS)
+            {
+                direction += Vec3::new(0.0, -1.0, 0.0);
+                snake.direction = Vec3::new(0.0, -1.0, 0.0);
+            } else if keyboard_input.pressed(KeyCode::ArrowLeft)
+                || keyboard_input.pressed(KeyCode::KeyD)
+            {
+                direction += Vec3::new(1.0, 0.0, 0.0);
+                snake.direction = Vec3::new(1.0, 0.0, 0.0);
+            } else if keyboard_input.pressed(KeyCode::ArrowLeft)
+                || keyboard_input.pressed(KeyCode::KeyW)
+            {
+                direction += Vec3::new(0.0, 1.0, 0.0);
+                snake.direction = Vec3::new(0.0, 1.0, 0.0);
+            } else {
+                direction += snake.direction;
+            }
+
+            // store sum_time somewhere so that it can be used at all time?
+            transform.translation += direction * SNAKE_SPEED;
         }
-        transform.translation += direction * SNAKE_SPEED * time.delta_seconds();
     }
 }
