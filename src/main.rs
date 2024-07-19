@@ -1,15 +1,15 @@
 use bevy::prelude::*;
 
+mod game;
 mod systems;
 
+use game::GamePlugin;
 use systems::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(GamePlugin)
         .add_systems(Startup, spawn_camera)
-        .add_systems(Startup, spawn_snake)
-        .add_systems(Startup, spawn_food)
-        .add_systems(Update, input_handler_snake)
         .run();
 }
