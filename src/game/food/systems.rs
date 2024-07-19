@@ -17,7 +17,7 @@ pub fn spawn_food(
                 translation: Vec3::new(coord.x, coord.y, 0.0),
                 ..default()
             },
-            texture: asset_server.load("sprites/test.png"),
+            texture: asset_server.load("sprites/snake_food.png"),
             ..default()
         },
         Food {},

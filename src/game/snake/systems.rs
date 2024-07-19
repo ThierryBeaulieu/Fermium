@@ -20,7 +20,7 @@ pub fn spawn_snake(
         ..default()
     };
 
-    let texture = asset_server.load("sprites/test.png");
+    let texture = asset_server.load("sprites/snake_body.png");
 
     let snake_bundle: (SpriteBundle, Snake) = (
         SpriteBundle {
