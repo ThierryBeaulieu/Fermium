@@ -44,7 +44,6 @@ pub fn spawn_food(
                 scale: Vec3::new(0.1, 0.1, 1.0),
                 ..default()
             },
-
             texture: asset_server.load("sprites/food.png"),
             ..default()
         },
@@ -68,10 +67,12 @@ pub fn spawn_snake(
         ..default()
     };
 
+    let texture = asset_server.load("sprites/snake_body.png");
+
     let snake_bundle: (SpriteBundle, Snake) = (
         SpriteBundle {
             transform: transform,
-            texture: asset_server.load("sprites/snake_body.png"),
+            texture: texture,
             ..default()
         },
         Snake {
