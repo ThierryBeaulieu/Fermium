@@ -29,7 +29,7 @@ pub fn spawn_snake(
             ..default()
         },
         Snake {
-            direction: Vec3::new(1.0, 0.0, 0.0),
+            direction: Vec3::new(0.0, 0.0, 0.0),
         },
     );
 
@@ -37,6 +37,24 @@ pub fn spawn_snake(
         .spawn(snake_bundle)
         .insert(SnakeTimer(Timer::from_seconds(0.2, TimerMode::Repeating)));
 }
+
+// manually set size
+
+/*
+fn print_sprite_bounding_boxes(
+    mut sprite_query: Query<(&Transform, &Handle<Image>), With<Sprite>>,
+    assets: Res<Assets<Image>>,
+) {
+    for (transform, image_handle) in sprite_query.iter_mut() {
+        let image_dimensions = assets.get(image_handle).unwrap().size();
+        let scaled_image_dimension = image_dimensions * transform.scale.truncate();
+        let bounding_box =
+            Rect::from_center_size(transform.translation.truncate(), scaled_image_dimension);
+
+        println!("bounding_box: {:?}", bounding_box);
+    }
+}
+*/
 
 pub fn input_handler_snake(
     keyboard_input: Res<ButtonInput<KeyCode>>,
