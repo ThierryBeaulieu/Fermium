@@ -4,6 +4,7 @@ use rand::random;
 
 // variables
 pub const SNAKE_SPEED: f32 = 32.0;
+pub const SNAKE_SIZE: f32 = 100.0; //px
 
 // components
 #[derive(Component)]
@@ -16,6 +17,8 @@ pub struct SnakeTimer(Timer);
 
 #[derive(Component)]
 pub struct Food {}
+
+// essayer de trouver une manière de faire en sorte que la position soit relative.
 
 // systems
 pub fn spawn_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
@@ -34,8 +37,11 @@ pub fn spawn_food(
 ) {
     let window = window_query.get_single().unwrap();
 
-    let random_x = random::<f32>() * window.width();
-    let random_y = random::<f32>() * window.height();
+    let absolute_pos_x = random::<f32>() * window.width();
+    let random_x = absolute_pos_x - (absolute_pos_x % SNAKE_SIZE);
+
+    let absolute_pox_y = random::<f32>() * window.height();
+    let random_y = absolute_pox_y - (absolute_pox_y % SNAKE_SIZE);
 
     commands.spawn((
         SpriteBundle {
@@ -58,9 +64,11 @@ pub fn spawn_snake(
 ) {
     let window = window_query.get_single().unwrap();
 
-    // todo ceil or floor it so that it can locked in a tile
-    let random_x = random::<f32>() * window.width();
-    let random_y = random::<f32>() * window.height();
+    let absolute_pos_x = random::<f32>() * window.width();
+    let random_x = absolute_pos_x - (absolute_pos_x % SNAKE_SIZE);
+
+    let absolute_pox_y = random::<f32>() * window.height();
+    let random_y = absolute_pox_y - (absolute_pox_y % SNAKE_SIZE);
 
     let transform = Transform {
         translation: Vec3::new(random_x, random_y, 0.0),
