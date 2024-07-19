@@ -41,7 +41,7 @@ pub fn spawn_food(
         SpriteBundle {
             transform: Transform {
                 translation: Vec3::new(random_x, random_y, 0.0),
-                scale: Vec3::new(0.1, 0.1, 1.0),
+                scale: Vec3::new(0.3, 0.3, 1.0),
                 ..default()
             },
             texture: asset_server.load("sprites/food.png"),
@@ -64,6 +64,7 @@ pub fn spawn_snake(
 
     let transform = Transform {
         translation: Vec3::new(random_x, random_y, 0.0),
+        scale: Vec3::new(0.3, 0.3, 1.0),
         ..default()
     };
 
