@@ -1,11 +1,10 @@
+use crate::game::systems_helper::get_random_coordinates;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
-use rand::random;
 
 use super::components::*;
 
-pub const SNAKE_SPEED: f32 = 32.0;
-pub const SNAKE_SIZE: f32 = 100.0;
+pub const SNAKE_SPEED: f32 = 50.0;
 
 pub fn spawn_snake(
     mut commands: Commands,
@@ -14,19 +13,14 @@ pub fn spawn_snake(
 ) {
     let window = window_query.get_single().unwrap();
 
-    let absolute_pos_x = random::<f32>() * window.width();
-    let random_x = absolute_pos_x - (absolute_pos_x % SNAKE_SIZE);
-
-    let absolute_pox_y = random::<f32>() * window.height();
-    let random_y = absolute_pox_y - (absolute_pox_y % SNAKE_SIZE);
+    let coord = get_random_coordinates(window.width(), window.height());
 
     let transform = Transform {
-        translation: Vec3::new(random_x, random_y, 0.0),
-        scale: Vec3::new(0.4, 0.4, 1.0),
+        translation: Vec3::new(coord.x, coord.y, 0.0),
         ..default()
     };
 
-    let texture = asset_server.load("sprites/snake_body.png");
+    let texture = asset_server.load("sprites/test.png");
 
     let snake_bundle: (SpriteBundle, Snake) = (
         SpriteBundle {

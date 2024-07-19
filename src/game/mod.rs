@@ -3,6 +3,8 @@ use bevy::prelude::*;
 pub mod food;
 pub mod snake;
 
+pub mod systems_helper;
+
 use food::FoodPlugin;
 use snake::SnakePlugin;
 
