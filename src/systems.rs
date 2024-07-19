@@ -59,12 +59,18 @@ pub fn spawn_snake(
 ) {
     let window = window_query.get_single().unwrap();
 
+    // todo ceil or floor it so that it can locked in a tile
     let random_x = random::<f32>() * window.width();
     let random_y = random::<f32>() * window.height();
 
+    let transform = Transform {
+        translation: Vec3::new(random_x, random_y, 0.0),
+        ..default()
+    };
+
     let snake_bundle: (SpriteBundle, Snake) = (
         SpriteBundle {
-            transform: Transform::from_xyz(random_x, random_y, 0.0),
+            transform: transform,
             texture: asset_server.load("sprites/snake_body.png"),
             ..default()
         },
