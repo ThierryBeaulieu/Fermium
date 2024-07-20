@@ -124,13 +124,11 @@ pub fn confine_snake_movement(
 ) {
     if let Ok((snake, snake_transform)) = snake_query.get_single_mut() {
         let mut faced_border = false;
-        if snake_transform.translation.x > GAME_BOARD_OFFSET.x + GAME_BOARD.width {
-            faced_border = true;
-        } else if snake_transform.translation.x < GAME_BOARD_OFFSET.x {
-            faced_border = true;
-        } else if snake_transform.translation.y > GAME_BOARD_OFFSET.y + GAME_BOARD.height {
-            faced_border = true;
-        } else if snake_transform.translation.y < GAME_BOARD_OFFSET.y {
+        if snake_transform.translation.x > GAME_BOARD_OFFSET.x + GAME_BOARD.width
+            || snake_transform.translation.x < GAME_BOARD_OFFSET.x
+            || snake_transform.translation.y > GAME_BOARD_OFFSET.y + GAME_BOARD.height
+            || snake_transform.translation.y < GAME_BOARD_OFFSET.y
+        {
             faced_border = true;
         }
 
