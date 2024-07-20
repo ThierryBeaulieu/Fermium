@@ -48,6 +48,7 @@ pub fn spawn_snake(
     window_query: Query<&Window, With<PrimaryWindow>>,
     asset_server: Res<AssetServer>,
 ) {
+    // tbeaulieu2: todo ensure that the snake spawns inside the board
     let window = window_query.get_single().unwrap();
 
     let coord = get_random_coordinates(window.width(), window.height());
@@ -146,17 +147,19 @@ pub fn confine_snake_movement(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
+    // tbeaulieu2: ensures that the snake won't come out of the screen and the boundaries
     if let Ok((snake, snake_transform)) = snake_query.get_single_mut() {
         let mut faced_border = false;
-        if snake_transform.translation.x > GAME_BOARD_OFFSET.x + GAME_BOARD.width
-            || snake_transform.translation.x < GAME_BOARD_OFFSET.x
-            || snake_transform.translation.y > GAME_BOARD_OFFSET.y + GAME_BOARD.height
-            || snake_transform.translation.y < GAME_BOARD_OFFSET.y
+        if snake_transform.translation.x + SNAKE_SIZE / 2.0 > GAME_BOARD_OFFSET.x + GAME_BOARD.width
+            || snake_transform.translation.x < GAME_BOARD_OFFSET.x + SNAKE_SIZE / 2.0
+            || snake_transform.translation.y + SNAKE_SIZE / 2.0
+                > GAME_BOARD_OFFSET.y + GAME_BOARD.height
+            || snake_transform.translation.y < GAME_BOARD_OFFSET.y + SNAKE_SIZE / 2.0
         {
             faced_border = true;
         }
 
-        // todo: afficher avec de l'ombrage les zones dans l'offset
+        // tbeaulieu2 todo: afficher avec de l'ombrage les zones dans l'offset
 
         if faced_border {
             commands.entity(snake).despawn();
