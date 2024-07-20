@@ -14,10 +14,34 @@ pub struct GameBoard {
     width: f32,
     height: f32,
 }
+
 pub const GAME_BOARD: GameBoard = GameBoard {
     width: 1400.0,
-    height: 850.0,
+    height: 800.0,
 };
+
+pub fn spawn_board(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let transform = Transform {
+        translation: Vec3::new(
+            GAME_BOARD_OFFSET.x + GAME_BOARD.width / 2.0,
+            GAME_BOARD_OFFSET.y + GAME_BOARD.height / 2.0,
+            0.0,
+        ),
+        ..default()
+    };
+
+    let texture = asset_server.load("sprites/game_board.png");
+
+    let board_bundle: (SpriteBundle, Board) = (
+        SpriteBundle {
+            transform: transform,
+            texture: texture,
+            ..default()
+        },
+        Board {},
+    );
+    commands.spawn(board_bundle);
+}
 
 pub fn spawn_snake(
     mut commands: Commands,

@@ -7,3 +7,6 @@ pub struct Snake {
 
 #[derive(Component)]
 pub struct SnakeTimer(pub Timer);
+
+#[derive(Component)]
+pub struct Board();
