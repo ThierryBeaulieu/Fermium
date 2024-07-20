@@ -1,3 +1,4 @@
+use crate::game::food::components::Food;
 use crate::game::systems_helper::get_random_coordinates;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
@@ -5,6 +6,8 @@ use bevy::window::PrimaryWindow;
 use super::components::*;
 
 pub const SNAKE_SPEED: f32 = 50.0;
+pub const SNAKE_SIZE: f32 = 50.0;
+pub const FOOD_SIZE: f32 = 50.0;
 
 pub fn spawn_snake(
     mut commands: Commands,
@@ -37,24 +40,6 @@ pub fn spawn_snake(
         .spawn(snake_bundle)
         .insert(SnakeTimer(Timer::from_seconds(0.2, TimerMode::Repeating)));
 }
-
-// manually set size
-
-/*
-fn print_sprite_bounding_boxes(
-    mut sprite_query: Query<(&Transform, &Handle<Image>), With<Sprite>>,
-    assets: Res<Assets<Image>>,
-) {
-    for (transform, image_handle) in sprite_query.iter_mut() {
-        let image_dimensions = assets.get(image_handle).unwrap().size();
-        let scaled_image_dimension = image_dimensions * transform.scale.truncate();
-        let bounding_box =
-            Rect::from_center_size(transform.translation.truncate(), scaled_image_dimension);
-
-        println!("bounding_box: {:?}", bounding_box);
-    }
-}
-*/
 
 pub fn input_handler_snake(
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -94,3 +79,39 @@ pub fn input_handler_snake(
         }
     }
 }
+
+pub fn eat_food(
+    mut commands: Commands,
+    mut snake_query: Query<&Transform, With<Snake>>,
+    food_query: Query<(Entity, &Transform), With<Food>>,
+    asset_server: Res<AssetServer>,
+) {
+    if let Ok(snake_transform) = snake_query.get_single_mut() {
+        for (food, food_transform) in food_query.iter() {
+            let distance = snake_transform
+                .translation
+                .distance(food_transform.translation);
+            let food_half_width = FOOD_SIZE / 2.0;
+            let snake_half_width = SNAKE_SIZE / 2.0;
+            if distance < food_half_width + snake_half_width {
+                info!("Snake just ate food");
+                let sound_effect = asset_server.load("sounds/upgrade_short.ogg");
+                commands.spawn(AudioBundle {
+                    source: sound_effect,
+                    settings: PlaybackSettings::ONCE,
+                    ..default()
+                });
+                commands.entity(food).despawn();
+            }
+        }
+    }
+}
+
+/*
+pub fn confine_snake_movement(
+    mut snake_query: Query<&mut Transform, With<Snake>>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
+    // todo
+}
+*/
