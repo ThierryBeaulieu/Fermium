@@ -8,6 +8,16 @@ use super::components::*;
 pub const SNAKE_SPEED: f32 = 50.0;
 pub const SNAKE_SIZE: f32 = 50.0;
 pub const FOOD_SIZE: f32 = 50.0;
+pub const GAME_BOARD_OFFSET: Vec3 = Vec3::new(50.0, 100.0, 0.0);
+
+pub struct GameBoard {
+    width: f32,
+    height: f32,
+}
+pub const GAME_BOARD: GameBoard = GameBoard {
+    width: 1400.0,
+    height: 850.0,
+};
 
 pub fn spawn_snake(
     mut commands: Commands,
@@ -107,11 +117,29 @@ pub fn eat_food(
     }
 }
 
-/*
 pub fn confine_snake_movement(
-    mut snake_query: Query<&mut Transform, With<Snake>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
+    mut snake_query: Query<(Entity, &mut Transform), With<Snake>>,
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
 ) {
-    // todo
+    if let Ok((snake, snake_transform)) = snake_query.get_single_mut() {
+        let sound_effect = asset_server.load("sounds/game_over.ogg");
+
+        if snake_transform.translation.x > GAME_BOARD_OFFSET.x + GAME_BOARD.width {
+            commands.entity(snake).despawn();
+            commands.spawn(AudioBundle {
+                source: sound_effect,
+                settings: PlaybackSettings::ONCE,
+                ..default()
+            });
+        } else if snake_transform.translation.x < GAME_BOARD_OFFSET.x {
+            commands.entity(snake).despawn();
+            commands.spawn(AudioBundle {
+                source: sound_effect,
+                settings: PlaybackSettings::ONCE,
+                ..default()
+            });
+        }
+    }
+    // todo completed later
 }
-*/
