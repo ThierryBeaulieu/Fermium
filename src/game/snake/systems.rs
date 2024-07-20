@@ -123,17 +123,20 @@ pub fn confine_snake_movement(
     asset_server: Res<AssetServer>,
 ) {
     if let Ok((snake, snake_transform)) = snake_query.get_single_mut() {
-        let sound_effect = asset_server.load("sounds/game_over.ogg");
-
+        let mut faced_border = false;
         if snake_transform.translation.x > GAME_BOARD_OFFSET.x + GAME_BOARD.width {
-            commands.entity(snake).despawn();
-            commands.spawn(AudioBundle {
-                source: sound_effect,
-                settings: PlaybackSettings::ONCE,
-                ..default()
-            });
+            faced_border = true;
         } else if snake_transform.translation.x < GAME_BOARD_OFFSET.x {
+            faced_border = true;
+        } else if snake_transform.translation.y > GAME_BOARD_OFFSET.y + GAME_BOARD.height {
+            faced_border = true;
+        } else if snake_transform.translation.y < GAME_BOARD_OFFSET.y {
+            faced_border = true;
+        }
+
+        if faced_border {
             commands.entity(snake).despawn();
+            let sound_effect = asset_server.load("sounds/game_over.ogg");
             commands.spawn(AudioBundle {
                 source: sound_effect,
                 settings: PlaybackSettings::ONCE,
