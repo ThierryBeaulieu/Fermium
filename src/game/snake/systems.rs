@@ -132,6 +132,8 @@ pub fn confine_snake_movement(
             faced_border = true;
         }
 
+        // todo: afficher avec de l'ombrage les zones dans l'offset
+
         if faced_border {
             commands.entity(snake).despawn();
             let sound_effect = asset_server.load("sounds/game_over.ogg");
